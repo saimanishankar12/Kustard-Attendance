@@ -1,59 +1,152 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Kustard Employee Attendance
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A location-based employee check-in/check-out web app built with Laravel, backed by a Google Sheet for live attendance tracking, with real-time weather effects and day/night theming.
 
-## About Laravel
+## Screenshot
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<img width="1920" height="1055" alt="image" src="https://github.com/user-attachments/assets/a35b95c2-6c31-4da8-bbb1-f747d562b0c0" />
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+*Employee attendance screen showing the shimmering header divider, weather-aware gradient banner, and geolocation-gated check-in/check-out form.*
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Features
 
-## Laravel Sponsors
+- **Geolocation-gated check-in/check-out** — employees must be within a configurable radius (default 150m) of the office to mark attendance.
+- **Google Sheets sync** — every check-in/check-out is appended/updated in a live Google Sheet alongside the local database, so HR can view attendance without opening the app.
+- **Automatic retry + backfill** — failed Google Sheet writes (e.g. during account/billing suspensions) are retried automatically, with an Artisan command to backfill any records that still failed.
+- **Live weather badge** — fetches real-time temperature and conditions (via Open-Meteo) for the employee's current location and displays it in the header.
+- **Rain visual effects** — an animated canvas overlay automatically shows light rain, rain, or a thunderstorm (with lightning flashes) based on real weather conditions at the detected location.
+- **Day/night theme** — automatically switches the UI palette after 6 PM based on the device clock, no manual toggle needed.
+- **Holiday calendar** — recognizes a configurable list of holidays and Sundays, disabling attendance and showing a celebratory popup.
+- **Working-hours tracker** — calculates and displays remaining working hours before check-out is allowed without a warning prompt.
+- **Mobile-first UI** — built for phones/tablets used as an office kiosk, with touch-safe button handling and responsive layout.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Tech Stack
 
-### Premium Partners
+- **Backend:** PHP / Laravel (Eloquent, Artisan commands)
+- **Frontend:** Blade templates, vanilla JavaScript, SweetAlert2
+- **Data storage:** MySQL/Postgres (via Eloquent) + Google Sheets (via Google Sheets API)
+- **Weather data:** [Open-Meteo](https://open-meteo.com/) (free, no API key required)
+- **Geolocation:** Browser Geolocation API + [Nominatim](https://nominatim.openstreetmap.org/) for reverse geocoding
+- **Fonts:** Google Fonts (Poppins, Goldman)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Project Structure
 
-## Contributing
+```
+app/
+  Http/Controllers/
+    AttendanceController.php     # Check-in/out logic, DB + Sheet sync
+  Console/Commands/
+    BackfillAttendanceSheet.php  # Backfills records missing from the Sheet
+  Services/
+    GoogleSheetService.php       # Wraps Google Sheets API calls
+  Models/
+    Attendance.php
+    Employees.php
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+resources/views/
+  welcome.blade.php              # Main attendance page
 
-## Code of Conduct
+public/
+  Files/
+    welcome.js                   # Frontend logic (geolocation, weather, UI state)
+    kustard-logo.png
+  welcome.css                    # Styling, themes, animations
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Setup
 
-## Security Vulnerabilities
+### Requirements
+- PHP 8.1+
+- Composer
+- MySQL or PostgreSQL
+- A Google Cloud service account with access to Google Sheets API
+- A Google Sheet shared with that service account (Editor access)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Installation
+
+```bash
+git clone <repo-url>
+cd kustard-attendance
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Configure your `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_DATABASE=kustard_attendance
+DB_USERNAME=root
+DB_PASSWORD=
+
+GOOGLE_SHEET_ID=your_spreadsheet_id
+GOOGLE_SERVICE_ACCOUNT_JSON=storage/app/google-service-account.json
+```
+
+Run migrations:
+
+```bash
+php artisan migrate
+```
+
+Place your Google service account JSON key at the path referenced in `.env`, and make sure that service account's email is shared as an **Editor** on the target Google Sheet.
+
+### Running locally
+
+```bash
+php artisan serve
+```
+
+Visit `http://localhost:8000`. Location detection works over plain HTTP on `localhost`/`127.0.0.1` only — any other host requires HTTPS.
+
+## Key Configuration
+
+| Setting | Location | Purpose |
+|---|---|---|
+| `OFFICE_LAT` / `OFFICE_LON` | `welcome.js` | Office coordinates for the geofence check |
+| `MAX_DISTANCE_METERS` | `welcome.js` | Allowed radius (meters) for marking attendance |
+| `HOLIDAYS` | `welcome.js` | Array of holiday dates, names, messages, images |
+| `WEATHER_REFRESH_MS` | `welcome.js` | How often the weather badge/rain effect refreshes |
+| Required working hours | `AttendanceController@calculateRemainingTime` | Currently 9 hours; adjust `requiredSeconds` |
+
+## Attendance Sync & Recovery
+
+Each check-in appends a row to the Google Sheet and stores the resulting row number (`sheet_row`) against the attendance record. Check-out updates that same row's out-time/location columns.
+
+If the Google Sheet append fails (e.g. Google Workspace billing suspension, permission revoked, network issue), the failure is logged and the `sheet_row` remains `null` — the attendance is still saved to the database, just not yet reflected in the Sheet.
+
+To backfill any attendance records that never made it into the Sheet:
+
+```bash
+php artisan attendance:backfill-sheet --date=2026-07-06
+```
+
+Omit `--date` to default to yesterday. Safe to re-run — it only processes records still missing a `sheet_row`.
+
+## Weather & Rain Effects
+
+Weather is fetched from Open-Meteo using the employee's live GPS coordinates. The returned WMO weather code is mapped to:
+
+| Condition | Badge | Visual effect |
+|---|---|---|
+| Clear / Cloudy / Fog | Icon + temperature | None |
+| Drizzle | 🌦️ + temperature | Light rain overlay |
+| Rain | 🌧️ + temperature | Medium rain overlay |
+| Thunderstorm / heavy rain | ⛈️ + temperature | Heavy rain overlay + lightning flashes |
+
+The rain effect renders on a full-screen `<canvas>` created dynamically by `welcome.js` — no markup changes required beyond adding the `#weather-badge` element to the page.
+
+## Known Limitations
+
+- Weather data source (Open-Meteo) typically updates hourly upstream; frequent polling keeps the UI feeling live but won't produce sub-hourly precision.
+- Reverse geocoding (Nominatim) is a free, rate-limited public service — avoid excessive request volume.
+- If the Google Workspace account or service account is suspended (e.g. billing issue), Sheet writes will fail silently until access is restored; use the backfill command afterward.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Internal project — not licensed for external distribution.
