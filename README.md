@@ -13,15 +13,15 @@ A location-based employee check-in/check-out web app built with Laravel, backed 
 
 ## Features
 
-- **Geolocation-gated check-in/check-out** — employees must be within a configurable radius (default 150m) of the office to mark attendance.
-- **Google Sheets sync** — every check-in/check-out is appended/updated in a live Google Sheet alongside the local database, so HR can view attendance without opening the app.
-- **Automatic retry + backfill** — failed Google Sheet writes (e.g. during account/billing suspensions) are retried automatically, with an Artisan command to backfill any records that still failed.
-- **Live weather badge** — fetches real-time temperature and conditions (via Open-Meteo) for the employee's current location and displays it in the header.
-- **Rain visual effects** — an animated canvas overlay automatically shows light rain, rain, or a thunderstorm (with lightning flashes) based on real weather conditions at the detected location.
-- **Day/night theme** — automatically switches the UI palette after 6 PM based on the device clock, no manual toggle needed.
-- **Holiday calendar** — recognizes a configurable list of holidays and Sundays, disabling attendance and showing a celebratory popup.
-- **Working-hours tracker** — calculates and displays remaining working hours before check-out is allowed without a warning prompt.
-- **Mobile-first UI** — built for phones/tablets used as an office kiosk, with touch-safe button handling and responsive layout.
+- **Geolocation-gated check-in/check-out** : employees must be within a configurable radius (default 150m) of the office to mark attendance.
+- **Google Sheets sync** :every check-in/check-out is appended/updated in a live Google Sheet alongside the local database, so HR can view attendance without opening the app.
+- **Automatic retry + backfill** : failed Google Sheet writes (e.g. during account/billing suspensions) are retried automatically, with an Artisan command to backfill any records that still failed.
+- **Live weather badge** : fetches real-time temperature and conditions (via Open-Meteo) for the employee's current location and displays it in the header.
+- **Rain visual effects** : an animated canvas overlay automatically shows light rain, rain, or a thunderstorm (with lightning flashes) based on real weather conditions at the detected location.
+- **Day/night theme** : automatically switches the UI palette after 6 PM based on the device clock, no manual toggle needed.
+- **Holiday calendar** : recognizes a configurable list of holidays and Sundays, disabling attendance and showing a celebratory popup.
+- **Working-hours tracker** : calculates and displays remaining working hours before check-out is allowed without a warning prompt.
+- **Mobile-first UI** :built for phones/tablets used as an office kiosk, with touch-safe button handling and responsive layout.
 
 ## Tech Stack
 
